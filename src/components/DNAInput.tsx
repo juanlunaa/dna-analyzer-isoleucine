@@ -1,11 +1,34 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 
-function DNAInput() {
-  const [sequence, setSequence] = useState("")
+interface DNAInputProps {
+  dnaSequence: string
+  handleDnaChange: (value: string) => boolean
+}
+
+function DNAInput ({ dnaSequence, handleDnaChange }: DNAInputProps) {
+  const [hasError, setHasError] = useState(false)
+  const timeoutRef = useRef<number | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toUpperCase().replace(/[^ATCG]/g, "")
-    setSequence(value)
+    const value = e.target.value.toUpperCase()
+    const isValid = handleDnaChange(value)
+    
+    if (isValid) {
+      setHasError(false)
+      timeoutRef.current = null
+      return
+    }
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    setHasError(!isValid)
+
+    timeoutRef.current = window.setTimeout(() => {
+      setHasError(false)
+      timeoutRef.current = null
+    }, 300)
   }
 
   return (
@@ -17,8 +40,8 @@ function DNAInput() {
         </div>
 
         <input
-          className="dna-input"
-          value={sequence}
+          className={`dna-input ${hasError ? 'shake' : ''}`}
+          value={dnaSequence}
           onChange={handleChange}
           placeholder="ATGATCATTACG"
         />
