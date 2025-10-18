@@ -1,0 +1,10 @@
+.react-flow__node {
+  border-radius: 100%;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+}
+
+.animated path{
+  stroke: greenyellow !important;
+}
