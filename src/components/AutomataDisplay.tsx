@@ -57,7 +57,16 @@ function AutomataDisplay({ transitions }: { transitions: TransitionType[]}) {
     animated: transition.isTransitionValid
   }))
 
-  console.log('Edges:', edges)
+  const nodes = initialNodes.map(node => {
+    const isActiveNode = transitions.some(transition => 
+      (transition.source === node.id || transition.target === node.id) && transition.isTransitionValid
+    )
+
+    return {
+      ...node,
+      className: isActiveNode ? 'node-active' : ''
+    }
+  })
 
   return (
     <div className="automata-container">
@@ -67,7 +76,7 @@ function AutomataDisplay({ transitions }: { transitions: TransitionType[]}) {
       </div>
 
       <div className="automata-canvas">
-        <ReactFlow nodes={initialNodes} edges={edges}>
+        <ReactFlow nodes={nodes} edges={edges} fitView>
           <Background />
         </ReactFlow>
       </div>

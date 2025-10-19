@@ -3,8 +3,16 @@
   width: 40px;
   height: 40px;
   border: 1px solid var(--color-border);
+  background-color: #242424;
+  transition: background-color 0.3s ease;
 }
 
 .animated path{
   stroke: greenyellow !important;
+}
+
+.node-active {
+  background-color: #008f39 !important;
+  border: 1px solid greenyellow !important;
+  color: white !important;
 }

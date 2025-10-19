@@ -5,4 +5,5 @@ export interface TransitionType {
   label: string
   isTransitionValid: boolean
   prevTransition: string | null
+  lastNodePrevTransition: boolean
 }
