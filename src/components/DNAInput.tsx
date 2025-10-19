@@ -43,7 +43,7 @@ function DNAInput ({ dnaSequence, handleDnaChange }: DNAInputProps) {
           className={`dna-input ${hasError ? 'shake' : ''}`}
           value={dnaSequence}
           onChange={handleChange}
-          placeholder="ATGATCATTACG"
+          placeholder="ATTATA"
         />
       </form>
     </div>

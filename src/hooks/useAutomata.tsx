@@ -1,53 +1,6 @@
 import { useState } from "react"
 import type { TransitionType } from "../types"
-
-const initialTransitions: TransitionType[] = [
-  {
-    id: 'A-B',
-    source: 'A',
-    target: 'B',
-    label: 'A',
-    isTransitionValid: false,
-    prevTransition: null,
-    lastNodePrevTransition: false,
-  },
-  {
-    id: 'B-C',
-    source: 'B',
-    target: 'C',
-    label: 'T',
-    isTransitionValid: false,
-    prevTransition: 'A-B',
-    lastNodePrevTransition: true,
-  },
-  {
-    id: 'C-D',
-    source: 'C',
-    target: 'D',
-    label: 'A',
-    isTransitionValid: false,
-    prevTransition: 'B-C',
-    lastNodePrevTransition: false,
-  },
-  {
-    id: 'C-E',
-    source: 'C',
-    target: 'E',
-    label: 'T',
-    isTransitionValid: false,
-    prevTransition: 'B-C',
-    lastNodePrevTransition: false,
-  },
-  {
-    id: 'C-F',
-    source: 'C',
-    target: 'F',
-    label: 'C',
-    isTransitionValid: false,
-    prevTransition: 'B-C',
-    lastNodePrevTransition: true,
-  },
-]
+import { initialTransitions } from "../const/InitialValues"
 
 function useAutomata() {
   const [dnaSequence, setDnaSequence] = useState("")
@@ -56,6 +9,7 @@ function useAutomata() {
   const [transitions, setTransitions] = useState(initialTransitions)
 
   const handleDnaChange = (value: string): boolean => {
+    // regular expression to validate DNA sequence (only A, T, G, C characters)
     const regexToValidDNAComponent = new RegExp("^[ATGC]*$")
     
     if (!regexToValidDNAComponent.test(value)) {
@@ -69,15 +23,14 @@ function useAutomata() {
     }
 
     setDnaSequence(value)
-    if (numIsoleucinaCodons === 0 || value.length < dnaSequence.length) {
-      handleTransitions(value)
-    }
+    handleTransitions(value)
     identifyIsoleucineCodons(value)
 
     return true
   }
 
   const identifyIsoleucineCodons = (value: string) => {
+    // regular expression to identify isoleucine codons
     const regexToIdentifyIsoleucineCodons = new RegExp("AT[TAC]", "g");
 
     const matches = value.match(regexToIdentifyIsoleucineCodons)
@@ -86,39 +39,33 @@ function useAutomata() {
   }
 
   const handleTransitions = (value: string) => {
-    // console.log(transitions)
-    // const numValidTransitions = transitions.filter(t => t.isTransitionValid).length
-    
-    // if (numValidTransitions > 3) {
-    //   console.log('Max valid transitions reached')
-    //   return
-    // }
-
     const nucleotides = value.split('')
     let prevTransitions = [...initialTransitions]
     let newTransitions: TransitionType[] = []
     let numValidTransitions = 0
 
+    // iterate over each nucleotide in the DNA sequence
     for (let i = 0; i < nucleotides.length; i++) {
       const nucleotide = nucleotides[i]
       let foundValidTransition = false
 
-      console.log(JSON.stringify(prevTransitions, null, 2))
-      console.log(numValidTransitions)
+      // reset after 3 valid transitions (1 codon) to start new codon evaluation
+      if (numValidTransitions >= 3) {
+        numValidTransitions = 0
+        prevTransitions = [...initialTransitions]
+      }
+
+      // iterate over each transition to evaluate if the current nucleotide validates it
       for (let j = 0; j < prevTransitions.length; j++) {
         const currentTransition = prevTransitions[j]
 
-        if (foundValidTransition || numValidTransitions >= 3) {
+        // if nucleotide is already validated for a previous transition or if the current transition is already valid, skip evaluation
+        if (foundValidTransition || currentTransition.isTransitionValid) {
           newTransitions.push(currentTransition)
           continue
         }
 
-        if (currentTransition.isTransitionValid) {
-          // i feel i have to do something here but idk what
-          newTransitions.push(currentTransition)
-          continue
-        }
-
+        // evaluate transition without previous transition dependency, i mean the first transition in the automata
         if (currentTransition.prevTransition === null) {
           const isValid = nucleotide === currentTransition.label
           if (isValid) {
@@ -131,14 +78,17 @@ function useAutomata() {
           })
         }
 
+        // evaluate transition with previous transition dependency
         if (currentTransition.prevTransition) {
+          // find the previous transition object based on the prevTransition id
           const prevTransitionIndex = newTransitions.findIndex(t => t.id === currentTransition.prevTransition)
           const prevTransition = prevTransitionIndex !== -1 ? newTransitions[prevTransitionIndex] : null
 
           if (prevTransition && prevTransition.isTransitionValid) {
             const isValid = nucleotide === currentTransition.label
-            console.log(`Nucleotide: ${nucleotide}, Transition: ${currentTransition.id}, Is Valid: ${isValid}, Found Valid Transition: ${foundValidTransition}`)
 
+            // if nucleotide is valid for the current transition and no other transition has been validated in this nucleotide iteration
+            // then validate this transition
             if (isValid && !foundValidTransition) {
               foundValidTransition = true
               numValidTransitions++
@@ -146,6 +96,11 @@ function useAutomata() {
                 ...currentTransition,
                 isTransitionValid: true
               })
+            // if nucleotide is not valid for the current transition
+            // then check if we need to reset previous transitions, in case this be the last next transition of the previous transition
+            // so if this occurs all previous transitions must be invalidated
+            // for example: ATG -> A-B (valid), B-C (valid), C-D (not valid) => must reset A-B and B-C to not valid
+            // special case: if nucleotide is the first one 'A' then we don't reset previous transitions because it could be the start of a new codon
             } else {
               if (!isValid && currentTransition.lastNodePrevTransition && nucleotide !== 'A') {
                 let resetIndex = prevTransitionIndex
@@ -157,7 +112,7 @@ function useAutomata() {
                   }
                   resetIndex = newTransitions.findIndex(t => t.id === transitionToReset.prevTransition)
                 }
-                numValidTransitions = 0
+                numValidTransitions = 0 // <- this invalidate the whole codon evaluation
               }
               newTransitions.push(currentTransition);
             }
@@ -167,131 +122,14 @@ function useAutomata() {
         }
       }
 
+      // prepare for the next nucleotide iteration
+      // transitions of the next iteration will be the ones just evaluated
+      // so we copy newTransitions to prevTransitions and reset newTransitions, ready for next evaluation
       prevTransitions = [...newTransitions]
       newTransitions = []
     }
 
     setTransitions(prevTransitions)
-        // prevTransitions.forEach(currentTransition => {
-        //   if (currentTransition.isTransitionValid) {
-        //     newTransitions.push(currentTransition)
-        //   }
-
-        //   if (currentTransition.prevTransition) {
-        //     const prevTransition = newTransitions.find(t => t.id === currentTransition.prevTransition)
-        //   }
-
-        //   if (currentTransition.prevTransition === null && !currentTransition.isTransitionValid) {
-        //     const isValid = nucleotide === currentTransition.label
-        //     return {
-        //       ...currentTransition,
-        //       isTransitionValid: isValid
-        //     }
-        //   } else if (currentTransition.prevTransition && !currentTransition.isTransitionValid) {
-        //     const prevTransition = prevTransitions.find(t => t.id === currentTransition.prevTransition)
-
-        //     if (prevTransition && prevTransition.isTransitionValid) {
-        //       const isValid = nucleotide === currentTransition.label
-        //       return {
-        //         ...currentTransition,
-        //         isTransitionValid: isValid
-        //       }
-        //     }
-        //   }
-
-        //   return currentTransition
-
-        // console.log(JSON.stringify(newTransitions, null, 2))
-
-        // const invalidTransitions: TransitionType[] = newTransitions.map(currentTransition => {
-        //   if (currentTransition.isTransitionValid && currentTransition.prevTransition && numValidTransitions < 3) {
-        //     const nextTransitions = newTransitions.filter(t => t.prevTransition === currentTransition.id)
-        //     const hasValidNextTransition = nextTransitions.some(t => t.isTransitionValid)
-
-        //     if (!hasValidNextTransition && nextTransitions.length > 0) {
-        //       return {
-        //         ...currentTransition,
-        //         isTransitionValid: false
-        //       }
-        //     }
-        //   }
-
-        //   return currentTransition
-        // })
-
-        // console.log(JSON.stringify(invalidTransitions, null, 2))
-
-        // return newTransitions
-
-        // return prevTransitions.reduce((newTransitions: TransitionType[], currentTransition: TransitionType) => {
-        //   const currentNumValidTransitions = newTransitions.filter(t => t.isTransitionValid).length
-
-        //   console.log(`Nucleotide: ${nucleotide}, Num Valid Transitions: ${currentNumValidTransitions}`)
-
-        //   if (currentTransition.prevTransition === null && !currentTransition.isTransitionValid) {
-            
-        //     const isValid = nucleotide === currentTransition.label
-        //     newTransitions.push({
-        //       ...currentTransition,
-        //       isTransitionValid: isValid
-        //     })
-
-        //   } else if (currentTransition.prevTransition && !currentTransition.isTransitionValid) {
-        //     const prevTransitionIndex = prevTransitions.findIndex(t => t.id === currentTransition.prevTransition)
-        //     const prevTransition = prevTransitionIndex !== -1 ? prevTransitions[prevTransitionIndex] : null
-
-        //     if (prevTransition && prevTransition.isTransitionValid) {
-        //       const isValid = nucleotide === currentTransition.label
-
-        //       if (!isValid && currentNumValidTransitions < 3) {
-        //         console.log('Invalid transition, resetting previous transition:', prevTransition.id)
-        //         newTransitions[prevTransitionIndex] = {
-        //           ...prevTransition,
-        //           isTransitionValid: false
-        //         }
-        //       }
-
-        //       newTransitions.push({
-        //         ...currentTransition,
-        //         isTransitionValid: isValid
-        //       })
-        //     } else {
-        //       newTransitions.push(currentTransition);
-        //     }
-        //   } else {
-        //     newTransitions.push(currentTransition);
-        //   }
-
-        //   console.log(JSON.stringify(newTransitions, null, 2))
-
-        //   return newTransitions
-        // }, [] as TransitionType[])
-
-        // return prevTransitions.map((transition) => {
-        //   const numValidTransitions = prevTransitions.filter(t => t.isTransitionValid).length
-        //   if (numValidTransitions >= 3) {
-        //     return transition
-        //   }
-        //   if (transition.prevTransition === null && !transition.isTransitionValid) {
-        //     return {
-        //       ...transition,
-        //       isTransitionValid: nucleotide === transition.label,
-        //     }
-        //   } else if (transition.prevTransition && !transition.isTransitionValid) {
-        //     const prevTransition = prevTransitions.find(t => t.id === transition.prevTransition)
-        //     if (prevTransition && prevTransition.isTransitionValid) {
-        //       return {
-        //         ...transition,
-        //         isTransitionValid: nucleotide === transition.label,
-        //       }
-        //     }
-        //   }
-        //   return transition
-        // })
-      // })
-
-    // })
-
   }
 
   return {

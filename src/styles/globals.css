@@ -49,9 +49,10 @@ body {
 .content-wrapper {
   width: 100%;
   max-width: 800px;
+  margin: 20px;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   text-align: center;
 }
 
@@ -64,7 +65,7 @@ body {
   font-weight: 600;
 }
 
-.input-description {
+.input-description, .content-wrapper span {
   color: var(--color-text-secondary);
   font-size: 0.95rem;
 }
@@ -109,17 +110,27 @@ body {
 }
 
 .automata-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: center;
   margin-bottom: var(--spacing-xs);
-  flex-wrap: wrap;
   gap: var(--spacing-sm);
 }
 
 .automata-header h3 {
   font-size: 1.25rem;
   font-weight: 600;
+}
+
+.automata-elements-container {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.automata-element {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .automata-badge {
@@ -142,24 +153,33 @@ body {
   height: 300px;
 }
 
-/* .automata-canvas::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, var(--color-text) 1px, transparent 1px),
-    linear-gradient(0deg, var(--color-text) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.1;
-} */
-
-.automata-placeholder {
+.automata-transition-table {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-md);
-  color: var(--color-text);
-  z-index: 1;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
 }
+
+.automata-transition-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.automata-transition-table table thead tr th {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  background: var(--color-background-secondary);
+}
+
+.automata-transition-table table tbody tr th, td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  background: var(--color-background);
+}
+
 
 .automata-placeholder p {
   font-size: 0.95rem;
@@ -167,6 +187,14 @@ body {
 }
 
 @media (max-width: 768px) {
+  .automata-elements-container {
+    flex-direction: column;
+  }
+
+  .automata-element {
+    width: 100%;
+  }
+
   .app-header h1 {
     font-size: 1.25rem;
   }
