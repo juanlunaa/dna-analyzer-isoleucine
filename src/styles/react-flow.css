@@ -1,0 +1,48 @@
+.react-flow__node {
+  border-radius: 100%;
+  width: 40px;
+  height: 40px;
+  /* border: 1px solid var(--color-border); */
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.animated path{
+  stroke: greenyellow !important;
+}
+
+.node-active {
+  background-color: #008f39 !important;
+  border: 1px solid greenyellow !important;
+  color: white !important;
+}
+
+.custom-node {
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+  position: relative;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-node-circle-aux {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-node-circle {
+  position: absolute;
+  width: 49px;
+  height: 49px;
+  border-radius: 100%;
+  border: 2px solid #777;
+  background-color: transparent;
+  z-index: 1;
+}
