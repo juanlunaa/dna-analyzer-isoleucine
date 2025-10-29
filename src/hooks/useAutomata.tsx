@@ -1,12 +1,19 @@
 import { useState } from "react"
 import type { TransitionType } from "../types"
-import { initialTransitions } from "../const/InitialValues"
+import {
+  initialIsoleucineTransitions,
+  initialPhenylalanineTransitions,
+  initialGlutamineTransitions
+} from "../const/InitialValues"
 
 function useAutomata() {
   const [dnaSequence, setDnaSequence] = useState("")
-  const [numIsoleucinaCodons, setNumIsoleucinaCodons] = useState(0)
+  const [numCodons, setNumCodons] = useState({"isoleucine": 0, "phenylalanine": 0, "glutamine": 0})
   const [isSequenceValid, setIsSequenceValid] = useState<boolean|null>(null)
-  const [transitions, setTransitions] = useState(initialTransitions)
+
+  const [isoleucineTransitions, setIsoleucineTransitions] = useState(initialIsoleucineTransitions)
+  const [phenylalanineTransitions, setPhenylalanineTransitions] = useState(initialPhenylalanineTransitions)
+  const [glutamineTransitions, setGlutamineTransitions] = useState(initialGlutamineTransitions)
 
   const handleDnaChange = (value: string): boolean => {
     // regular expression to validate DNA sequence (only A, T, G, C characters)
@@ -23,22 +30,39 @@ function useAutomata() {
     }
 
     setDnaSequence(value)
-    handleTransitions(value)
+    
+    handleTransitions(value, initialIsoleucineTransitions, setIsoleucineTransitions)
+    handleTransitions(value, initialPhenylalanineTransitions, setPhenylalanineTransitions)
+    handleTransitions(value, initialGlutamineTransitions, setGlutamineTransitions)
+    
     identifyIsoleucineCodons(value)
 
     return true
   }
 
   const identifyIsoleucineCodons = (value: string) => {
-    // regular expression to identify isoleucine codons
+    // regular expressions to identify codons
     const regexToIdentifyIsoleucineCodons = new RegExp("AT[TAC]", "g");
+    const regexToIdentifyPhenylalanineCodons = new RegExp("TT[TC]", "g");
+    const regexToIdentifyGlutamineCodons = new RegExp("CA[AG]", "g");
 
-    const matches = value.match(regexToIdentifyIsoleucineCodons)
+    const isoleucineMatches = value.match(regexToIdentifyIsoleucineCodons)
+    const phenylalanineMatches = value.match(regexToIdentifyPhenylalanineCodons)
+    const glutamineMatches = value.match(regexToIdentifyGlutamineCodons)
 
-    setNumIsoleucinaCodons(matches ? matches.length : 0)
+    setNumCodons(prev => ({
+      ...prev,
+      isoleucine: isoleucineMatches ? isoleucineMatches.length : 0,
+      phenylalanine: phenylalanineMatches ? phenylalanineMatches.length : 0,
+      glutamine: glutamineMatches ? glutamineMatches.length : 0
+    }))
   }
 
-  const handleTransitions = (value: string) => {
+  const handleTransitions = (
+    value: string,
+    initialTransitions: TransitionType[],
+    setTransitions: (transitions: TransitionType[]) => void
+  ) => {
     const nucleotides = value.split('')
     let prevTransitions = [...initialTransitions]
     let newTransitions: TransitionType[] = []
@@ -102,7 +126,7 @@ function useAutomata() {
             // for example: ATG -> A-B (valid), B-C (valid), C-D (not valid) => must reset A-B and B-C to not valid
             // special case: if nucleotide is the first one 'A' then we don't reset previous transitions because it could be the start of a new codon
             } else {
-              if (!isValid && currentTransition.lastNodePrevTransition && nucleotide !== 'A') {
+              if (!isValid && currentTransition.lastNodePrevTransition && nucleotide !== initialTransitions[0].label) {
                 let resetIndex = prevTransitionIndex
                 while (resetIndex !== -1) {
                   const transitionToReset = newTransitions[resetIndex]
@@ -134,9 +158,11 @@ function useAutomata() {
 
   return {
     dnaSequence,
-    numIsoleucinaCodons,
+    numCodons,
     isSequenceValid,
-    transitions,
+    isoleucineTransitions,
+    phenylalanineTransitions,
+    glutamineTransitions,
     handleDnaChange
   }
 }

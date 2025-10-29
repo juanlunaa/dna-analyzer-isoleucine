@@ -48,7 +48,7 @@ body {
 
 .content-wrapper {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 20px;
   display: flex;
   flex-direction: column;
@@ -122,15 +122,23 @@ body {
 
 .automata-elements-container {
   display: flex;
+  justify-content: space-between;
   gap: var(--spacing-sm);
 }
 
 .automata-element {
-  width: 50%;
+  width: 33%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-xs);
+}
+
+.automata-element-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .automata-badge {

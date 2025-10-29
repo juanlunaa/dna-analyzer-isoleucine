@@ -36,7 +36,7 @@ function DNAInput ({ dnaSequence, handleDnaChange }: DNAInputProps) {
       <form>
         <div className="input-header">
           <h2>Secuencia de ADN</h2>
-          <p className="input-description">Ingrese una secuencia de ADN para identificar si contiene Isoleucina</p>
+          <p className="input-description">Ingrese una secuencia de ADN para identificar sus aminoacidos (isoleucina, fenilalina, glutamina)</p>
         </div>
 
         <input
