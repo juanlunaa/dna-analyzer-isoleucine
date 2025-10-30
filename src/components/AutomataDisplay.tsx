@@ -45,7 +45,7 @@ function AutomataDisplay({
     <div className="automata-element">
       <div className="automata-element-header">
         <span className="automata-badge">{title}</span>
-        <span className="automata-badge">{numCodons}</span>
+        <span className="automata-codons-count">{numCodons}{numCodons !== 1 ? ' codones' : ' codon'}</span>
       </div>
 
       <div className="automata-canvas">

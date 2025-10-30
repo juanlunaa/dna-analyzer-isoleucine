@@ -5,6 +5,7 @@ import {
   initialPhenylalanineTransitions,
   initialGlutamineTransitions
 } from "../const/InitialValues"
+import { launchConfetti } from "../const/utils"
 
 function useAutomata() {
   const [dnaSequence, setDnaSequence] = useState("")
@@ -50,12 +51,22 @@ function useAutomata() {
     const phenylalanineMatches = value.match(regexToIdentifyPhenylalanineCodons)
     const glutamineMatches = value.match(regexToIdentifyGlutamineCodons)
 
-    setNumCodons(prev => ({
-      ...prev,
-      isoleucine: isoleucineMatches ? isoleucineMatches.length : 0,
-      phenylalanine: phenylalanineMatches ? phenylalanineMatches.length : 0,
-      glutamine: glutamineMatches ? glutamineMatches.length : 0
-    }))
+    setNumCodons(prev => {
+      if (isoleucineMatches && isoleucineMatches.length > prev.isoleucine
+        || phenylalanineMatches && phenylalanineMatches.length > prev.phenylalanine
+        || glutamineMatches && glutamineMatches.length > prev.glutamine
+      ) {
+        // launch confetti when a new codon is identified
+        launchConfetti()
+      }
+
+      return {
+        ...prev,
+        isoleucine: isoleucineMatches ? isoleucineMatches.length : 0,
+        phenylalanine: phenylalanineMatches ? phenylalanineMatches.length : 0,
+        glutamine: glutamineMatches ? glutamineMatches.length : 0
+      }
+    })
   }
 
   const handleTransitions = (

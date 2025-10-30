@@ -172,56 +172,56 @@ export const initialPhenylalanineTransitions: TransitionType[] = [
 export const initialPhenylalanineNodes = [
   {
     id: 'A',
-    position: { x: -86.6, y: -50 },
+    position: { x: 70, y: -80 },
     data: {
       label: 'A',
-      showSource: true,
-      sourcePosition: Position.Right,
-    },
-    type: 'custom',
-  },
-  {
-    id: 'B',
-    position: { x: 0, y: -100 },
-    data: {
-      label: 'B',
-      showTarget: true,
-      targetPosition: Position.Left,
-      showSource: true,
-      sourcePosition: Position.Right,
-    },
-    type: 'custom',
-  },
-  {
-    id: 'C',
-    position: { x: 86.6, y: -50 },
-    data: {
-      label: 'C',
-      showTarget: true,
-      targetPosition: Position.Left,
       showSource: true,
       sourcePosition: Position.Bottom,
     },
     type: 'custom',
   },
   {
+    id: 'B',
+    position: { x: 70, y: 0 },
+    data: {
+      label: 'B',
+      showTarget: true,
+      targetPosition: Position.Top,
+      showSource: true,
+      sourcePosition: Position.Bottom,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'C',
+    position: { x: 70, y: 80 },
+    data: {
+      label: 'C',
+      showTarget: true,
+      targetPosition: Position.Top,
+      showSource: true,
+      sourcePosition: Position.Left,
+    },
+    type: 'custom',
+  },
+  {
     id: 'D',
-    position: { x: 86.6, y: 50 },
+    position: { x: -70, y: 40 },
     data: {
       label: 'D',
       showTarget: true,
-      targetPosition: Position.Top,
+      targetPosition: Position.Right,
       encircled: true,
     },
     type: 'custom',
   },
   {
     id: 'E',
-    position: { x: 0, y: 100 },
+    position: { x: -70, y: -40 },
     data: {
       label: 'E',
       showTarget: true,
-      targetPosition: Position.Top,
+      targetPosition: Position.Right,
       encircled: true,
     },
     type: 'custom',
@@ -270,7 +270,7 @@ export const initialGlutamineTransitions: TransitionType[] = [
 export const initialGlutamineNodes = [
   {
     id: 'A',
-    position: { x: -86.6, y: -50 },
+    position: { x: -82.5, y: -25 },
     data: {
       label: 'A',
       showSource: true,
@@ -280,7 +280,7 @@ export const initialGlutamineNodes = [
   },
   {
     id: 'B',
-    position: { x: 0, y: -100 },
+    position: { x: 0, y: -80 },
     data: {
       label: 'B',
       showTarget: true,
@@ -292,7 +292,7 @@ export const initialGlutamineNodes = [
   },
   {
     id: 'C',
-    position: { x: 86.6, y: -50 },
+    position: { x: 82.5, y: -25 },
     data: {
       label: 'C',
       showTarget: true,
@@ -304,7 +304,7 @@ export const initialGlutamineNodes = [
   },
   {
     id: 'D',
-    position: { x: 86.6, y: 50 },
+    position: { x: 51, y: 65},
     data: {
       label: 'D',
       showTarget: true,
@@ -315,7 +315,7 @@ export const initialGlutamineNodes = [
   },
   {
     id: 'E',
-    position: { x: 0, y: 100 },
+    position: { x: -51, y: 65},
     data: {
       label: 'E',
       showTarget: true,
