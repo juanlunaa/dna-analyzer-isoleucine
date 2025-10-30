@@ -12,7 +12,7 @@ export const transitionTableData: TransitionTableData = {
 
 export const transitionTableHeaders = ['A', 'T', 'C'];
 
-export const initialTransitions: TransitionType[] = [
+export const initialIsoleucineTransitions: TransitionType[] = [
   {
     id: 'A-B',
     source: 'A',
@@ -60,7 +60,7 @@ export const initialTransitions: TransitionType[] = [
   },
 ]
 
-export const initialNodes = [
+export const initialIsoleucineNodes = [
   {
     id: 'A',
     position: { x: -86.6, y: -50 },
@@ -129,3 +129,200 @@ export const initialNodes = [
     type: 'custom',
   }
 ]
+
+export const initialPhenylalanineTransitions: TransitionType[] = [
+  {
+    id: 'A-B',
+    source: 'A',
+    target: 'B',
+    label: 'T',
+    isTransitionValid: false,
+    prevTransition: null,
+    lastNodePrevTransition: false,
+  },
+  {
+    id: 'B-C',
+    source: 'B',
+    target: 'C',
+    label: 'T',
+    isTransitionValid: false,
+    prevTransition: 'A-B',
+    lastNodePrevTransition: true,
+  },
+  {
+    id: 'C-D',
+    source: 'C',
+    target: 'D',
+    label: 'T',
+    isTransitionValid: false,
+    prevTransition: 'B-C',
+    lastNodePrevTransition: false,
+  },
+  {
+    id: 'C-E',
+    source: 'C',
+    target: 'E',
+    label: 'C',
+    isTransitionValid: false,
+    prevTransition: 'B-C',
+    lastNodePrevTransition: true,
+  },
+]
+
+export const initialPhenylalanineNodes = [
+  {
+    id: 'A',
+    position: { x: 70, y: -80 },
+    data: {
+      label: 'A',
+      showSource: true,
+      sourcePosition: Position.Bottom,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'B',
+    position: { x: 70, y: 0 },
+    data: {
+      label: 'B',
+      showTarget: true,
+      targetPosition: Position.Top,
+      showSource: true,
+      sourcePosition: Position.Bottom,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'C',
+    position: { x: 70, y: 80 },
+    data: {
+      label: 'C',
+      showTarget: true,
+      targetPosition: Position.Top,
+      showSource: true,
+      sourcePosition: Position.Left,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'D',
+    position: { x: -70, y: 40 },
+    data: {
+      label: 'D',
+      showTarget: true,
+      targetPosition: Position.Right,
+      encircled: true,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'E',
+    position: { x: -70, y: -40 },
+    data: {
+      label: 'E',
+      showTarget: true,
+      targetPosition: Position.Right,
+      encircled: true,
+    },
+    type: 'custom',
+  }
+]
+
+export const initialGlutamineTransitions: TransitionType[] = [
+  {
+    id: 'A-B',
+    source: 'A',
+    target: 'B',
+    label: 'C',
+    isTransitionValid: false,
+    prevTransition: null,
+    lastNodePrevTransition: false,
+  },
+  {
+    id: 'B-C',
+    source: 'B',
+    target: 'C',
+    label: 'A',
+    isTransitionValid: false,
+    prevTransition: 'A-B',
+    lastNodePrevTransition: true,
+  },
+  {
+    id: 'C-D',
+    source: 'C',
+    target: 'D',
+    label: 'A',
+    isTransitionValid: false,
+    prevTransition: 'B-C',
+    lastNodePrevTransition: false,
+  },
+  {
+    id: 'C-E',
+    source: 'C',
+    target: 'E',
+    label: 'G',
+    isTransitionValid: false,
+    prevTransition: 'B-C',
+    lastNodePrevTransition: true,
+  },
+]
+
+export const initialGlutamineNodes = [
+  {
+    id: 'A',
+    position: { x: -82.5, y: -25 },
+    data: {
+      label: 'A',
+      showSource: true,
+      sourcePosition: Position.Right,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'B',
+    position: { x: 0, y: -80 },
+    data: {
+      label: 'B',
+      showTarget: true,
+      targetPosition: Position.Left,
+      showSource: true,
+      sourcePosition: Position.Right,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'C',
+    position: { x: 82.5, y: -25 },
+    data: {
+      label: 'C',
+      showTarget: true,
+      targetPosition: Position.Left,
+      showSource: true,
+      sourcePosition: Position.Bottom,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'D',
+    position: { x: 51, y: 65},
+    data: {
+      label: 'D',
+      showTarget: true,
+      targetPosition: Position.Top,
+      encircled: true,
+    },
+    type: 'custom',
+  },
+  {
+    id: 'E',
+    position: { x: -51, y: 65},
+    data: {
+      label: 'E',
+      showTarget: true,
+      targetPosition: Position.Top,
+      encircled: true,
+    },
+    type: 'custom',
+  }
+]
+

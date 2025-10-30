@@ -1,14 +1,23 @@
 import { ReactFlow, Background } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import '../styles/react-flow.css';
-import type { EdgeType, TransitionType } from '../types';
-import { initialNodes } from '../const/InitialValues';
+import type { EdgeType, NodeType, TransitionType } from '../types';
 import CustomNode from './CustomNode';
-import TransitionTable from './TransitionTable';
+// import TransitionTable from './TransitionTable';
 
 const nodeTypes = { custom: CustomNode }
 
-function AutomataDisplay({ transitions }: { transitions: TransitionType[]}) {
+function AutomataDisplay({
+  title,
+  numCodons,
+  transitions,
+  nodes
+}: {
+  title: string,
+  numCodons: number,
+  transitions: TransitionType[],
+  nodes: NodeType[]
+}) {
 
   const edges: EdgeType[] = transitions.map(transition => ({
     id: transition.id,
@@ -18,7 +27,7 @@ function AutomataDisplay({ transitions }: { transitions: TransitionType[]}) {
     animated: transition.isTransitionValid
   }))
 
-  const nodes = initialNodes.map(node => {
+  const parsedNodes = nodes.map(node => {
     const isActiveNode = transitions.some(transition => 
       (transition.source === node.id || transition.target === node.id) && transition.isTransitionValid
     )
@@ -33,39 +42,30 @@ function AutomataDisplay({ transitions }: { transitions: TransitionType[]}) {
   })
 
   return (
-    <div className="automata-container">
-      <div className="automata-header">
-        <h3>Autómata Finito Determinista</h3>
+    <div className="automata-element">
+      <div className="automata-element-header">
+        <span className="automata-badge">{title}</span>
+        <span className="automata-codons-count">{numCodons}{numCodons !== 1 ? ' codones' : ' codon'}</span>
       </div>
 
-      <div className="automata-elements-container">
-        <div className="automata-element">
-          <span className="automata-badge">Representación Gráfica</span>
-          <div className="automata-canvas">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            fitView
-            zoomOnScroll={false}
-            zoomOnPinch={false}
-            zoomOnDoubleClick={false}
-            panOnDrag={false}
-            panOnScroll={false}
-            selectionOnDrag={false}
-            nodesDraggable={false}
-            nodesConnectable={false}
-            elementsSelectable={false}
-            >
-            <Background />
-          </ReactFlow>
-          </div>
-        </div>
-
-        <div className="automata-element">
-          <span className="automata-badge">Tabla de transiciones</span>
-          <TransitionTable />
-        </div>
+      <div className="automata-canvas">
+      <ReactFlow
+        nodes={parsedNodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        fitView
+        zoomOnScroll={false}
+        zoomOnPinch={false}
+        zoomOnDoubleClick={false}
+        panOnDrag={false}
+        panOnScroll={false}
+        selectionOnDrag={false}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        elementsSelectable={false}
+        >
+        <Background />
+      </ReactFlow>
       </div>
     </div>
   )

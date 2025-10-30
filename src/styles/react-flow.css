@@ -46,3 +46,7 @@
   background-color: transparent;
   z-index: 1;
 }
+
+.react-flow__attribution {
+  display: none;
+}
